@@ -117,6 +117,13 @@ func (h *Handler) getIceServerConfForStunnerConf(params types.GetIceAuthParams, 
 		h.log.Debugf("Considering Listener: namespace: %s, gateway: %s, listener: %s", namespace,
 			gateway, listener)
 
+		if params.PublicIP != nil {
+			l.PublicAddr = *params.PublicIP
+		}
+		if params.PublicPort != nil {
+			l.PublicPort = *params.PublicPort
+		}
+
 		// filter
 		if params.Namespace != nil && *params.Namespace != namespace {
 			h.log.Debugf("Ignoring listener due to gateway namespace mismatch: "+
