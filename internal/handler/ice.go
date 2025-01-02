@@ -101,10 +101,21 @@ func (h *Handler) getIceServerConf(params types.GetIceAuthParams) (types.IceConf
 func (h *Handler) getIceServerConfForStunnerConf(params types.GetIceAuthParams, stunnerConfig *stnrv1.StunnerConfig) (*types.IceAuthenticationToken, *hErr) {
 	h.log.Debugf("getIceServerConfForStunnerConf: considering Stunner config %s", stunnerConfig.String())
 
+	// fmt.Printf("Listeners: %+v\n", stunnerConfig.Listeners)
+
 	// should we generate an ICE server config for this stunner config?
 	uris := []string{}
 	for _, l := range stunnerConfig.Listeners {
 		l := l
+		// Print all fields of listener
+		// fmt.Printf("Listener: %+v\n", l)
+		// fmt.Printf("Listener public addr: %+v\n", l.PublicAddr)
+
+		if l.PublicAddr == "" {
+			h.log.Errorf("Listener %q lacks a public address", l.Name)
+			//continue
+		}
+
 		// format is namespace/gateway/listener
 		tokens := strings.Split(l.Name, "/")
 		if len(tokens) != 3 {
@@ -140,11 +151,13 @@ func (h *Handler) getIceServerConfForStunnerConf(params types.GetIceAuthParams, 
 			continue
 		}
 
+		h.log.Info("Before generating URI for listener")
 		uri, err := stunner.GetUriFromListener(&l)
 		if err != nil {
 			h.log.Errorf("Cannot generate URI for listener: %s", err.Error())
 			continue
 		}
+		h.log.Info("After generating URI for listener")
 
 		uris = append(uris, uri)
 	}

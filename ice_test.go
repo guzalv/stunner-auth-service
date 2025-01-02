@@ -549,9 +549,9 @@ func testICECDS(t *testing.T, tests []iceAuthTestCase) {
 	log := loggerFactory.NewLogger("auth-test")
 
 	// make config deletions superfast
-	deleteDelay := cdsserver.ConfigDeletionUpdateDelay
-	cdsserver.ConfigDeletionUpdateDelay = time.Millisecond
-	defer func() { cdsserver.ConfigDeletionUpdateDelay = deleteDelay }()
+	// deleteDelay := cdsserver.ConfigDeletionUpdateDelay
+	// cdsserver.ConfigDeletionUpdateDelay = time.Millisecond
+	// defer func() { cdsserver.ConfigDeletionUpdateDelay = deleteDelay }()
 
 	conf := make(chan *stnrv1.StunnerConfig, 10)
 	defer close(conf)
@@ -578,7 +578,7 @@ func testICECDS(t *testing.T, tests []iceAuthTestCase) {
 		os.Exit(1)
 	}
 
-	if err := client.Watch(ctx, conf); err != nil {
+	if err := client.Watch(ctx, conf, false); err != nil {
 		log.Errorf("Could not watch CDS server: %s", err.Error())
 		os.Exit(1)
 	}

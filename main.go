@@ -80,7 +80,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err := client.Watch(ctx, conf); err != nil {
+	if err := client.Watch(ctx, conf, false); err != nil {
 		log.Errorf("Could not watch CDS server: %s", err.Error())
 		os.Exit(1)
 	}
